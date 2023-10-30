@@ -5,40 +5,37 @@ document.addEventListener("DOMContentLoaded", function(event) {
     function loadImagesFromZip(zipFile) {
         JSZip.loadAsync(zipFile)
             .then(function (zip) {
-                const imagePromises = [];
-
                 zip.forEach(function (relativePath, file) {
                     if (file.dir) return;
 
-                    const imageName = file.name.split('/').pop().split('.')[0];
+                    const fileName = file.name.split('/').pop();
+                    const fileExtension = fileName.split('.').pop();
+                    const imageName = fileName.split('.').slice(0, -1).join('.');
+
                     const imageContainer = document.createElement('div');
                     imageContainer.className = 'image-container';
 
-                    imagePromises.push(
-                        file.async('blob').then(function (blob) {
-                            const imageUrl = URL.createObjectURL(blob);
+                    file.async('blob').then(function (blob) {
+                        const imageUrl = URL.createObjectURL(blob);
 
-                            const img = document.createElement('img');
-                            img.src = imageUrl;
-                            img.alt = imageName;
+                        const img = document.createElement('img');
+                        img.src = imageUrl;
+                        img.alt = imageName;
 
-                            const imageCaption = document.createElement('div');
-                            imageCaption.className = 'image-name';
-                            imageCaption.innerText = imageName;
+                        const imageCaption = document.createElement('div');
+                        imageCaption.className = 'image-name';
+                        imageCaption.innerText = imageName;
 
-                            imageContainer.appendChild(img);
-                            imageContainer.appendChild(imageCaption);
+                        imageContainer.appendChild(img);
+                        imageContainer.appendChild(imageCaption);
 
-                            imageGrid.appendChild(imageContainer);
+                        imageGrid.appendChild(imageContainer);
 
-                            imageContainer.addEventListener('click', () => {
-                                downloadImage(imageUrl, imageName);
-                            });
-                        })
-                    );
+                        imageContainer.addEventListener('click', () => {
+                            downloadImage(imageUrl, fileName, fileExtension);
+                        });
+                    });
                 });
-
-                return Promise.all(imagePromises);
             });
     }
 
@@ -56,10 +53,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
         });
     }
 
-    function downloadImage(url, fileName) {
+    function downloadImage(url, fileName, fileExtension) {
         const a = document.createElement('a');
         a.href = url;
-        a.download = fileName;
+        a.download = `${fileName}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
