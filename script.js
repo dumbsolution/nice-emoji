@@ -1,3 +1,4 @@
+document.addEventListener("DOMContentLoaded", function(event) {
 const imageFolder = 'emoji';
 const imageGrid = document.getElementById('image-grid');
 const searchInput = document.getElementById('search-bar');
@@ -64,3 +65,4 @@ function downloadImage(url, fileName) {
 searchInput.addEventListener('input', handleSearch);
 
 loadImages();
+})
