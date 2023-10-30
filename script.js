@@ -1,4 +1,4 @@
-const imageFolder = '/emoji';
+const imageFolder = 'emoji';
 const imageGrid = document.getElementById('image-grid');
 const searchInput = document.getElementById('search-bar');
 
